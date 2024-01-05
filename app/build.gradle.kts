@@ -37,6 +37,17 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.android.volley:volley:1.2.1")
+    implementation("com.android.identity:identity-credential-android:20231002")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
+    implementation("com.kakao.sdk:v2-all:2.11.2") // 전체 모듈 설치, 2.11.0 버전부터 지원
+    implementation("com.kakao.sdk:v2-user:2.11.2") // 카카오 로그인
+    implementation("com.kakao.sdk:v2-talk:2.11.2") // 친구, 메시지(카카오톡)
+    implementation("com.kakao.sdk:v2-story:2.11.2") // 카카오스토리
+    implementation("com.kakao.sdk:v2-share:2.11.2") // 메시지(카카오톡 공유)
+    implementation("com.kakao.sdk:v2-navi:2.11.2") // 카카오내비
+    implementation("com.kakao.sdk:v2-friend:2.11.2") // 카카오톡 소셜 피커, 리소스 번들 파일 포함
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
