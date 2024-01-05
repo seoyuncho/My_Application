@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <application
+        android:name=".KakaoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -30,6 +31,21 @@
         </activity>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity"/>
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
+                <data
+                    android:host="oauth"
+                    android:scheme="kakao2bbfe49f3aa4cf2ffe12a2e533679563" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
