@@ -1,12 +1,18 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+
+    private TextView tv_id, tv_name, tv_age;
+    private static final String TAG = "MainActivity";
 
 public class MainActivity extends AppCompatActivity
         implements BottomNavigationView
@@ -19,6 +25,20 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        tv_id = findViewById(R.id.tv_id);
+        tv_name = findViewById(R.id.tv_name);
+        tv_age = findViewById(R.id.tv_age);
+
+
+        Intent intent = getIntent();
+        String userID = intent.getStringExtra("userID");
+        String userName = intent.getStringExtra("userName");
+        String userAge = intent.getStringExtra("userAge");
+
+        tv_id.setText(userID);
+        tv_name.setText(userName);
+        tv_age.setText(userAge);
 
         bottomNavigationView
                 = findViewById(R.id.bottomNavigationView);
