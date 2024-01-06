@@ -2,30 +2,44 @@ package com.example.myapplication;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegisterRequest extends StringRequest {
+public class RegisterRequest extends JsonObjectRequest {
 
-    // 서버 URL 설정 ( PHP 파일 연동 )
-    final static private String URL = "http://143.248.197.181/register.php";
-    private Map<String, String> map;
+    // Server URL
+    final static private String URL = "http://192.168.56.1:3000/register";
+
+    // JSON data to be sent to the server
+    private JSONObject jsonBody;
 
 
-    public RegisterRequest(String userID, String userPassword, String userName, int userAge, Response.Listener<String> listener) {
-        super(Method.POST, URL, listener, null);
+    public RegisterRequest(String userID, String userPassword, String userName, int userAge, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        super(Method.POST, URL, null, listener, null);
 
-        map = new HashMap<>();
-        map.put("userID",userID);
-        map.put("userPassword", userPassword);
-        map.put("userName", userName);
-        map.put("userAge", userAge + "");
+        // Create JSON object
+        jsonBody = new JSONObject();
+        try {
+            jsonBody.put("userID", userID);
+            jsonBody.put("userPassword", userPassword);
+            jsonBody.put("userName", userName);
+            jsonBody.put("userAge", userAge);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    protected Map<String, String> getParams() throws AuthFailureError {
-        return map;
+    public byte[] getBody() {
+        return jsonBody.toString().getBytes();
+    }
+
+    @Override
+    public String getBodyContentType() {
+        return "application/json";
     }
 }

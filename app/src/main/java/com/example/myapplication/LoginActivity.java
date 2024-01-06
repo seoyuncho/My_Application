@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
@@ -57,33 +58,43 @@ public class LoginActivity extends AppCompatActivity {
                 String userID = et_id.getText().toString();
                 String userPass = et_pass.getText().toString();
 
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                Response.Listener<JSONObject> responseListener = new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONObject response) {
                         try {
                             // TODO : 인코딩 문제때문에 한글 DB인 경우 로그인 불가
                             System.out.println("hongchul" + response);
-                            JSONObject jsonObject = new JSONObject(response);
-                            boolean success = jsonObject.getBoolean("success");
+                            boolean success = response.getBoolean("success");
                             if (success) { // 로그인에 성공한 경우
-                                String userID = jsonObject.getString("userID");
-                                String userPass = jsonObject.getString("userPassword");
+                                String receivedUserID = response.getString("userID");
+                                String receivedUserName = response.getString("userName");
+                                String receivedUserAge = response.getString("userAge");
 
                                 Toast.makeText(getApplicationContext(),"로그인에 성공하였습니다.",Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                intent.putExtra("userID", userID);
-                                intent.putExtra("userPass", userPass);
+                                intent.putExtra("userID", receivedUserID);
+                                intent.putExtra("userName", receivedUserName);
+                                intent.putExtra("userAge", receivedUserAge);
                                 startActivity(intent);
                             } else { // 로그인에 실패한 경우
                                 Toast.makeText(getApplicationContext(),"로그인에 실패하였습니다.",Toast.LENGTH_SHORT).show();
-                                return;
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 };
-                LoginRequest loginRequest = new LoginRequest(userID, userPass, responseListener);
+
+                Response.ErrorListener errorListener = new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Error.Response", error.toString());
+                        Toast.makeText(getApplicationContext(),"서버 오류로 로그인에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+                    }
+                };
+
+                // 서버로 Volley를 이용해서 요청을 함.
+                LoginRequest loginRequest = new LoginRequest(userID, userPass, responseListener, errorListener);
                 RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
                 queue.add(loginRequest);
             }
