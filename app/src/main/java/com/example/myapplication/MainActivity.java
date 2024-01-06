@@ -1,30 +1,59 @@
 package com.example.myapplication;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-    private TextView tv_id, tv_pass;
-    private static final String TAG = "MainActivity";
+public class MainActivity extends AppCompatActivity
+        implements BottomNavigationView
+        .OnNavigationItemSelectedListener {
+
+    BottomNavigationView bottomNavigationView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tv_id = findViewById(R.id.tv_id);
-        tv_pass = findViewById(R.id.tv_pass);
+        bottomNavigationView
+                = findViewById(R.id.bottomNavigationView);
 
+        bottomNavigationView
+                .setOnNavigationItemSelectedListener(this);
+        bottomNavigationView.setSelectedItemId(R.id.person);
+    }
+    FirstFragment firstFragment = new FirstFragment();
+    SecondFragment secondFragment = new SecondFragment();
+    ThirdFragment thirdFragment = new ThirdFragment();
 
-        Intent intent = getIntent();
-        String userID = intent.getStringExtra("userID");
-        String userPass = intent.getStringExtra("userPass");
-
-        tv_id.setText(userID);
-        tv_pass.setText(userPass);
+    @Override
+    public boolean
+    onNavigationItemSelected(@NonNull MenuItem item)
+    {
+        if (item.getItemId() == R.id.person) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragment, firstFragment)
+                    .commit();
+            return true;
+        } else if (item.getItemId() == R.id.home) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragment, secondFragment)
+                    .commit();
+            return true;
+        } else if (item.getItemId() == R.id.settings) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragment, thirdFragment)
+                    .commit();
+            return true;
+        }
+        return false;
     }
 }
