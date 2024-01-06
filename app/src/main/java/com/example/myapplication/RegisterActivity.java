@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
@@ -42,32 +44,38 @@ public class RegisterActivity extends AppCompatActivity {
                 String userName = et_name.getText().toString();
                 int userAge = Integer.parseInt(et_age.getText().toString());
 
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                Response.Listener<JSONObject> responseListener = new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONObject response) {
                         try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            boolean success = jsonObject.getBoolean("success");
-                            if (success) { // 회원등록에 성공한 경우
+                            boolean success = response.getBoolean("success");
+                            if (success) {
                                 Toast.makeText(getApplicationContext(),"회원 등록에 성공하였습니다.",Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                                 startActivity(intent);
-                            } else { // 회원등록에 실패한 경우
+                            } else {
                                 Toast.makeText(getApplicationContext(),"회원 등록에 실패하였습니다.",Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                 };
+
+                // Handle error response
+                Response.ErrorListener errorListener = new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Error.Response", error.toString());
+                        Toast.makeText(getApplicationContext(),"서버 오류로 회원 등록에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+                    }
+                };
+
                 // 서버로 Volley를 이용해서 요청을 함.
-                RegisterRequest registerRequest = new RegisterRequest(userID,userPass,userName,userAge, responseListener);
+                RegisterRequest registerRequest = new RegisterRequest(userID,userPass,userName,userAge, responseListener, errorListener);
                 RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);
                 queue.add(registerRequest);
-
             }
         });
-
     }
 }
