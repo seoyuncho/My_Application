@@ -59,11 +59,24 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_login" />
 
     <ImageView
+        android:id="@+id/google_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/google_login_small"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/kakao_login"
+        app:layout_constraintTop_toBottomOf="@+id/btn_register"
+        />
+
+    <ImageView
         android:id="@+id/kakao_login"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/kakao_login_small"
         android:layout_marginTop="30dp"
+        app:layout_constraintStart_toEndOf="@id/google_login"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_register"
         />
 
