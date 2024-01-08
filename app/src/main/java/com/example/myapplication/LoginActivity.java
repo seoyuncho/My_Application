@@ -1,7 +1,14 @@
 package com.example.myapplication;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
@@ -15,6 +22,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 
@@ -27,8 +40,10 @@ import kotlin.jvm.functions.Function2;
 public class LoginActivity extends AppCompatActivity {
     private EditText et_id, et_pass;
     private Button btn_login, btn_register;
-    private ImageView btn_kakao_login;
+    private ImageView btn_google_login, btn_kakao_login;
     private static final String TAG = "LoginActivity";
+    private GoogleSignInClient mGoogleSignInClient;
+    private ActivityResultLauncher<Intent> resultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         et_pass = findViewById(R.id.et_pass);
         btn_login = findViewById(R.id.btn_login);
         btn_register = findViewById(R.id.btn_register);
+        btn_google_login = findViewById((R.id.google_login));
         btn_kakao_login = findViewById(R.id.kakao_login);
 
 
@@ -62,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            // TODO : 인코딩 문제때문에 한글 DB인 경우 로그인 불가
+                            // TODO : 인코딩 문제 때문에 한글 DB인 경우 로그인 불가
                             System.out.println("hongchul" + response);
                             boolean success = response.getBoolean("success");
                             if (success) { // 로그인에 성공한 경우
@@ -100,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+
         // 카카오톡이 설치되어 있는지 확인하는 메서드 , 카카오에서 제공함. 콜백 객체를 이용합.
         Function2<OAuthToken,Throwable,Unit> callback =new Function2<OAuthToken, Throwable, Unit>() {
             @Override
@@ -124,7 +141,6 @@ public class LoginActivity extends AppCompatActivity {
            //KakaoLogin 창을 띄운다.
            @Override
            public void onClick(View view) {
-
                // 해당 기기에 카카오톡이 설치되어 있는 확인
                 if(UserApiClient.getInstance().isKakaoTalkLoginAvailable(LoginActivity.this)){
                     UserApiClient.getInstance().loginWithKakaoTalk(LoginActivity.this, callback);
@@ -136,5 +152,59 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+        // ActivityResultLauncher
+        setResultSignUp();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestProfile()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        btn_google_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signIn();
+            }
+        });
+    }
+
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        resultLauncher.launch(signInIntent);
+    }
+
+    private void setResultSignUp() {
+        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        // If the result is received normally, execute the conditional statement
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+
+                            // Function to output to the log using the account information to be implemented below.
+                            handleSignInResult(task);
+                        }
+                    }
+                });
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            String email = account != null ? account.getEmail() : "";
+            String displayName = account != null ? account.getDisplayName() : "";
+            String photoUrl = account != null && account.getPhotoUrl() != null ? account.getPhotoUrl().toString() : "";
+
+            Log.d("로그인한 유저의 이메일", email);
+            Log.d("로그인한 유저의 전체이름", displayName);
+            Log.d("로그인한 유저의 프로필 사진의 주소", photoUrl);
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w("failed", "signInResult:failed code=" + e.getStatusCode());
+        }
     }
 }

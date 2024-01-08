@@ -8,12 +8,17 @@ android {
 
     defaultConfig {
         applicationId = "com.example.myapplication"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    packaging {
+        resources.excludes.add("META-INF/AL2.0")
+        resources.excludes.add("META-INF/LGPL2.1")
     }
 
     buildTypes {
@@ -41,6 +46,12 @@ dependencies {
     implementation("com.gauravk.audiovisualizer:audiovisualizer:0.9.2")
     implementation("com.karumi:dexter:6.2.3")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
+    // Google Play services
+    implementation ("com.google.gms:google-services:4.4.0")
+    implementation ("com.google.firebase:firebase-auth:22.3.0")
+    implementation ("com.google.firebase:firebase-bom:32.7.0")
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
 
     implementation("com.kakao.sdk:v2-all:2.11.2") // 전체 모듈 설치, 2.11.0 버전부터 지원
     implementation("com.kakao.sdk:v2-user:2.11.2") // 카카오 로그인
