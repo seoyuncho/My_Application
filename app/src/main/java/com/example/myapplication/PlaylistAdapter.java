@@ -42,7 +42,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
         public PlaylistViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.titleTextView);
-            ownerTextView = itemView.findViewById(R.id.ownerTextView);
+            ownerTextView = itemView.findViewById(R.id.friendTextView);
         }
 
         public void bind(Playlist playlist) {

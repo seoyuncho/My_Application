@@ -94,24 +94,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center">
-
-<!--                <ImageView-->
-<!--                    android:layout_width="40dp"-->
-<!--                    android:layout_height="40dp"-->
-<!--                    android:layout_margin="12dp"-->
-<!--                    android:background="@drawable/facebook"/>-->
-<!--                <ImageView-->
-<!--                    android:layout_width="40dp"-->
-<!--                    android:layout_height="40dp"-->
-<!--                    android:layout_margin="12dp"-->
-<!--                    android:background="@drawable/github"/>-->
-<!--                <ImageView-->
-<!--                    android:layout_width="40dp"-->
-<!--                    android:layout_height="40dp"-->
-<!--                    android:layout_margin="12dp"-->
-<!--                    android:background="@drawable/twitter"/>-->
-
-
                 <ImageView
                     android:id="@+id/google_login"
                     android:layout_width="40sp"

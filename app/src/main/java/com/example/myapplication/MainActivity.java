@@ -23,13 +23,11 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
-
-    BottomNavigationView bottomNavigationView;
-    Bundle bundle = new Bundle();
-
-    FirstFragment firstFragment = new FirstFragment();
-    SecondFragment secondFragment = new SecondFragment();
-    ThirdFragment thirdFragment = new ThirdFragment();
+    private BottomNavigationView bottomNavigationView;
+    private FirstFragment firstFragment;
+    private SecondFragment secondFragment;
+    private ThirdFragment thirdFragment;
+    private Bundle bundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -38,9 +36,25 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        firstFragment = new FirstFragment();
+        secondFragment = new SecondFragment();
+        thirdFragment = new ThirdFragment();
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setSelectedItemId(R.id.person);
+        getUserFriends("id", new FriendCallback() {
+            @Override
+            public void onFriendsReceived(JSONArray friends) {
+//                // Handle the received songs (songRows)
+                Log.d("VolleyResponse", "Friends: " + friends.toString());
+                bundle.putString("friends", friends.toString());
+                firstFragment.setArguments(bundle); // Set arguments before fragment transactions
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                // Handle the error
+                Log.e("VolleyError", "Error: " + errorMessage);
+            }
+        });
 
         Intent intent = getIntent();
         String userID = intent.getStringExtra("userID");
@@ -68,12 +82,12 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        bottomNavigationView.setSelectedItemId(R.id.person);
     }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item)
     {
-
         if (item.getItemId() == R.id.person) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -101,6 +115,12 @@ public class MainActivity extends AppCompatActivity
         void onError(String errorMessage);
     }
 
+    public interface FriendCallback {
+        void onFriendsReceived(JSONArray friends);
+        void onError(String errorMessage);
+    }
+
+
     public void getUserSongs(String userID, final SongCallback callback) {
         String url = "http://143.248.218.196:3000/user-songs/" + userID;
 
@@ -115,6 +135,7 @@ public class MainActivity extends AppCompatActivity
                             // Assuming the songs are stored as a JSONArray in the response
                             JSONArray songRows = response.getJSONArray("songs");
                             bundle.putString("songRows", songRows.toString());
+//                            secondFragment.setArguments(bundle);
                             thirdFragment.setArguments(bundle);
                             callback.onSongsReceived(songRows);
                         } catch (JSONException e) {
@@ -135,4 +156,37 @@ public class MainActivity extends AppCompatActivity
         requestQueue.add(jsonObjectRequest);
     }
 
+    public void getUserFriends(String userID, final FriendCallback callback) {
+        String url = "http://143.248.218.196:3000/user-friends/" + userID;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            // Assuming the songs are stored as a JSONArray in the response
+                            JSONArray friends = response.getJSONArray("friends");
+                            bundle.putString("friends", friends.toString());
+                            firstFragment.setArguments(bundle);
+                            callback.onFriendsReceived(friends);
+                        } catch (JSONException e) {
+                            callback.onError("Error parsing JSON");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError("Network error: " + error.toString());
+                    }
+                }
+        );
+
+        // Add the request to the RequestQueue
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
+    }
 }
