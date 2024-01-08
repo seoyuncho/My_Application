@@ -3,6 +3,14 @@ package com.example.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -76,8 +84,6 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            // TODO : 인코딩 문제 때문에 한글 DB인 경우 로그인 불가
-                            System.out.println("hongchul" + response);
                             boolean success = response.getBoolean("success");
                             if (success) { // 로그인에 성공한 경우
                                 String receivedUserID = response.getString("userID");
@@ -117,7 +123,26 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
-        // 카카오톡이 설치되어 있는지 확인하는 메서드 , 카카오에서 제공함. 콜백 객체를 이용합.
+        // 구글 로그인 세팅
+        setResultSignUp();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestId()
+//                .requestProfile()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        btn_google_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                resultLauncher.launch(signInIntent);
+            }
+        });
+
+
+        // 카카오톡 로그인 세팅
         Function2<OAuthToken,Throwable,Unit> callback =new Function2<OAuthToken, Throwable, Unit>() {
             @Override
             // 콜백 메서드 ,
@@ -126,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
                 //oAuthToken != null 이라면 로그인 성공
                 if(oAuthToken!=null){
                     // 토큰이 전달된다면 로그인이 성공한 것이고 토큰이 전달되지 않으면 로그인 실패한다.
-                    //updateKakaoLoginUi();
+                    handleKakaoLogin();
 
                 }else {
                     //로그인 실패
@@ -138,10 +163,10 @@ public class LoginActivity extends AppCompatActivity {
         };
 
         btn_kakao_login.setOnClickListener(new View.OnClickListener() {
-           //KakaoLogin 창을 띄운다.
-           @Override
-           public void onClick(View view) {
-               // 해당 기기에 카카오톡이 설치되어 있는 확인
+            //KakaoLogin 창을 띄운다.
+            @Override
+            public void onClick(View view) {
+                // 해당 기기에 카카오톡이 설치되어 있는 확인
                 if(UserApiClient.getInstance().isKakaoTalkLoginAvailable(LoginActivity.this)){
                     UserApiClient.getInstance().loginWithKakaoTalk(LoginActivity.this, callback);
                 }else{
@@ -150,61 +175,45 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-        // ActivityResultLauncher
-        setResultSignUp();
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestProfile()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        btn_google_login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signIn();
-            }
-        });
-    }
-
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        resultLauncher.launch(signInIntent);
     }
 
     private void setResultSignUp() {
         resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        // If the result is received normally, execute the conditional statement
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    // If the result is received normally, execute the conditional statement
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
 
-                            // Function to output to the log using the account information to be implemented below.
-                            handleSignInResult(task);
-                        }
+                        // Function to output to the log using the account information to be implemented below.
+                        handleGoogleLogIn(task);
                     }
-                });
+                }
+            }
+        );
     }
 
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+    private void handleGoogleLogIn(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            String email = account != null ? account.getEmail() : "";
+            String accountId = account != null ? account.getId() : "";
             String displayName = account != null ? account.getDisplayName() : "";
-            String photoUrl = account != null && account.getPhotoUrl() != null ? account.getPhotoUrl().toString() : "";
+//            String photoUrl = account != null && account.getPhotoUrl() != null ? account.getPhotoUrl().toString() : "";
 
-            Log.d("로그인한 유저의 이메일", email);
+            Log.d("로그인한 유저의 아디", accountId);
             Log.d("로그인한 유저의 전체이름", displayName);
-            Log.d("로그인한 유저의 프로필 사진의 주소", photoUrl);
+//            Log.d("로그인한 유저의 프로필 사진의 주소", photoUrl);
+
+
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w("failed", "signInResult:failed code=" + e.getStatusCode());
         }
+    }
+
+    private void handleKakaoLogin() {
+
     }
 }
