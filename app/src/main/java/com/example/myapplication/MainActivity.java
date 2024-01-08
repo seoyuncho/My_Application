@@ -3,7 +3,6 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,12 +13,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 public class MainActivity extends AppCompatActivity
-        implements BottomNavigationView
-        .OnNavigationItemSelectedListener {
-    private TextView tv_id, tv_name, tv_age;
+        implements BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
 
     BottomNavigationView bottomNavigationView;
+    Bundle bundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -27,35 +25,31 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        tv_id = findViewById(R.id.tv_id);
-//        tv_name = findViewById(R.id.tv_name);
-//        tv_age = findViewById(R.id.tv_age);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        bottomNavigationView.setSelectedItemId(R.id.person);
 
         Intent intent = getIntent();
         String userID = intent.getStringExtra("userID");
+        String userPassword = intent.getStringExtra("userPassword");
         String userName = intent.getStringExtra("userName");
         String userAge = intent.getStringExtra("userAge");
 
-//        tv_id.setText(userID);
-//        tv_name.setText(userName);
-//        tv_age.setText(userAge);
-
-        bottomNavigationView
-                = findViewById(R.id.bottomNavigationView);
-
-        bottomNavigationView
-                .setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setSelectedItemId(R.id.person);
+        bundle.putString("userID", userID);
+        bundle.putString("userPassword", userPassword);
+        bundle.putString("userName", userName);
+        bundle.putString("userAge", userAge);
     }
-    FirstFragment firstFragment = new FirstFragment();
-    SecondFragment secondFragment = new SecondFragment();
-    ThirdFragment thirdFragment = new ThirdFragment();
 
     @Override
-    public boolean
-    onNavigationItemSelected(@NonNull MenuItem item)
+    public boolean onNavigationItemSelected(@NonNull MenuItem item)
     {
+        FirstFragment firstFragment = new FirstFragment();
+        SecondFragment secondFragment = new SecondFragment();
+        ThirdFragment thirdFragment = new ThirdFragment();
+        thirdFragment.setArguments(bundle);
+
         if (item.getItemId() == R.id.person) {
             getSupportFragmentManager()
                     .beginTransaction()

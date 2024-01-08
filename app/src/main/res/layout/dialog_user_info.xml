@@ -11,7 +11,7 @@
         android:id="@+id/textViewUserID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp" />
 
@@ -19,20 +19,20 @@
         android:id="@+id/textViewUserPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:layout_marginBottom="8dp" />
 
     <TextView
         android:id="@+id/textViewUserName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:layout_marginBottom="8dp" />
 
     <TextView
         android:id="@+id/textViewUserAge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
 </LinearLayout>

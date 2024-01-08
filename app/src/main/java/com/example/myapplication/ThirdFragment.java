@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,10 +51,15 @@ public class ThirdFragment extends Fragment {
 
     private ArrayList<UserPlaylist> getUserPlaylist() {
         // 여기서 네트워크나 로컬 DB에서 데이터를 가져오는 로직을 구현해야 해
-
+        Bundle bundle2 = getArguments();
+//        if (bundle2 != null) {
+//            String songname = bundle2.getString("songname");
+//            String singer = bundle2.getString("singer");
+//        }
 
         // 아래는 임시 데이터 예시야. 실제 데이터를 가져오는 로직으로 대체해야 해
         ArrayList<UserPlaylist> playlists = new ArrayList<>();
+//      playlists.add(new UserPlaylist(songname, singer));
         playlists.add(new UserPlaylist("Song1", "Singer1"));
         playlists.add(new UserPlaylist("Song2", "Singer2"));
         playlists.add(new UserPlaylist("Song3", "Singer3"));
@@ -64,22 +70,23 @@ public class ThirdFragment extends Fragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_user_info, null);
 
-        // 여기서 네트워크나 로컬 DB에서 유저 정보를 가져와서 설정해야 함
-        // 임시 데이터 예시
-        String userID = "user123";
-        String userPassword = "password123";
-        String userName = "John Doe";
-        String userAge = "25";
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String userID = bundle.getString("userID");
+            String userPassword = bundle.getString("userPassword");
+            String userName = bundle.getString("userName");
+            String userAge = bundle.getString("userAge");
 
-        TextView textViewUserID = dialogView.findViewById(R.id.textViewUserID);
-        TextView textViewUserPassword = dialogView.findViewById(R.id.textViewUserPassword);
-        TextView textViewUserName = dialogView.findViewById(R.id.textViewUserName);
-        TextView textViewUserAge = dialogView.findViewById(R.id.textViewUserAge);
+            TextView textViewUserID = dialogView.findViewById(R.id.textViewUserID);
+            TextView textViewUserPassword = dialogView.findViewById(R.id.textViewUserPassword);
+            TextView textViewUserName = dialogView.findViewById(R.id.textViewUserName);
+            TextView textViewUserAge = dialogView.findViewById(R.id.textViewUserAge);
 
-        textViewUserID.setText("ID: " + userID);
-        textViewUserPassword.setText("Password: " + userPassword);
-        textViewUserName.setText("Name: " + userName);
-        textViewUserAge.setText("Age: " + userAge);
+            textViewUserID.setText("ID: " + userID);
+            textViewUserPassword.setText("Password: " + userPassword);
+            textViewUserName.setText("Name: " + userName);
+            textViewUserAge.setText("Age: " + userAge);
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setView(dialogView)

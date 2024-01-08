@@ -2,14 +2,14 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -67,12 +67,14 @@ public class LoginActivity extends AppCompatActivity {
                             boolean success = response.getBoolean("success");
                             if (success) { // 로그인에 성공한 경우
                                 String receivedUserID = response.getString("userID");
+                                String receivedUserPassword = response.getString("userPassword");
                                 String receivedUserName = response.getString("userName");
                                 String receivedUserAge = response.getString("userAge");
 
                                 Toast.makeText(getApplicationContext(),"로그인에 성공하였습니다.",Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.putExtra("userID", receivedUserID);
+                                intent.putExtra("userPassword", receivedUserPassword);
                                 intent.putExtra("userName", receivedUserName);
                                 intent.putExtra("userAge", receivedUserAge);
                                 startActivity(intent);
