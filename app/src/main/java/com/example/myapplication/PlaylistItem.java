@@ -4,6 +4,7 @@ public class PlaylistItem {
     private String playlistName;
     private int playlistImageRes;
 
+
     public PlaylistItem(String playlistName, int playlistImageRes) {
         this.playlistName = playlistName;
         this.playlistImageRes = playlistImageRes;

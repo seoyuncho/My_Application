@@ -1,18 +1,14 @@
 package com.example.myapplication;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class LoginRequest extends JsonObjectRequest {
 
     // Server URL
-    final static private String URL = "http://192.168.56.1:3000/login";
+    final static private String URL = "http://143.248.218.196:3000/login";
 
     // JSON data to be sent to the server
     private JSONObject jsonBody;
