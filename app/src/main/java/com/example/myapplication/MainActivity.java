@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity
                             // Assuming the songs are stored as a JSONArray in the response
                             JSONArray songRows = response.getJSONArray("songs");
                             bundle.putString("songRows", songRows.toString());
-//                            secondFragment.setArguments(bundle);
+                            secondFragment.setArguments(bundle);
                             thirdFragment.setArguments(bundle);
                             callback.onSongsReceived(songRows);
                         } catch (JSONException e) {
