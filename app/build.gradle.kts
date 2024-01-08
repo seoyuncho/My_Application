@@ -45,6 +45,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.12.0")
     implementation("com.gauravk.audiovisualizer:audiovisualizer:0.9.2")
     implementation("com.karumi:dexter:6.2.3")
+    implementation("com.google.android.gms:play-services-base:18.3.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     // Google Play services

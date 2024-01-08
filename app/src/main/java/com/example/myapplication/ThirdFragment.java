@@ -10,10 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -22,7 +25,7 @@ public class ThirdFragment extends Fragment {
     private RecyclerView recyclerView;
     private UserPlaylistAdapter userPlaylistAdapter;
     private ArrayList<UserPlaylist> userPlaylistArrayList;
-
+    public Bundle bundle;
     public ThirdFragment() {
         // Required empty public constructor
     }
@@ -30,6 +33,8 @@ public class ThirdFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        bundle = getArguments();
         View view = inflater.inflate(R.layout.fragment_third, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -51,18 +56,24 @@ public class ThirdFragment extends Fragment {
 
     private ArrayList<UserPlaylist> getUserPlaylist() {
         // 여기서 네트워크나 로컬 DB에서 데이터를 가져오는 로직을 구현해야 해
-        Bundle bundle2 = getArguments();
-//        if (bundle2 != null) {
-//            String songname = bundle2.getString("songname");
-//            String singer = bundle2.getString("singer");
-//        }
-
-        // 아래는 임시 데이터 예시야. 실제 데이터를 가져오는 로직으로 대체해야 해
         ArrayList<UserPlaylist> playlists = new ArrayList<>();
-//      playlists.add(new UserPlaylist(songname, singer));
-        playlists.add(new UserPlaylist("Song1", "Singer1"));
-        playlists.add(new UserPlaylist("Song2", "Singer2"));
-        playlists.add(new UserPlaylist("Song3", "Singer3"));
+
+        if (bundle != null) {
+            String songRows = bundle.getString("songRows");
+            try {
+                // Parse the JSON array string
+                JSONArray playlistData = new JSONArray(songRows);
+
+                // Iterate through the playlistData and create UserPlaylist objects
+                for (int i = 0; i < playlistData.length(); i++) {
+                    JSONObject songInfo = playlistData.getJSONObject(i);
+                    playlists.add(new UserPlaylist(songInfo.getString("songname"), songInfo.getString("singer")));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                // Handle JSON parsing error
+            }
+        }
         return playlists;
     }
 
@@ -70,7 +81,6 @@ public class ThirdFragment extends Fragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_user_info, null);
 
-        Bundle bundle = getArguments();
         if (bundle != null) {
             String userID = bundle.getString("userID");
             String userPassword = bundle.getString("userPassword");
