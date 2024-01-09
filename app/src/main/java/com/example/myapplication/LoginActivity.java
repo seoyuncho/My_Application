@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -83,6 +84,14 @@ public class LoginActivity extends AppCompatActivity {
                 String userID = et_id.getText().toString();
                 String userPass = et_pass.getText().toString();
 
+
+                Boolean isEmptyText = TextUtils.isEmpty(userID) || TextUtils.isEmpty(userPass);
+
+                if(isEmptyText) { //editText가 비어있다면
+                    Toast.makeText(getBaseContext(), "Please fill in the remaining blanks", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Response.Listener<JSONObject> responseListener = new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -94,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                                 String receivedUserName = response.getString("userName");
                                 String receivedUserAge = response.getString("userAge");
 
-                                Toast.makeText(getApplicationContext(),"로그인에 성공하였습니다.",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),"Login success!",Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.putExtra("userID", receivedUserID);
                                 intent.putExtra("userPassword", receivedUserPassword);
@@ -102,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                                 intent.putExtra("userAge", receivedUserAge);
                                 startActivity(intent);
                             } else { // 로그인에 실패한 경우
-                                Toast.makeText(getApplicationContext(),"로그인에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),"Login failed",Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -114,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Error.Response", error.toString());
-                        Toast.makeText(getApplicationContext(),"서버 오류로 로그인에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"Log in faile: server error.",Toast.LENGTH_SHORT).show();
                     }
                 };
 
@@ -159,6 +168,7 @@ public class LoginActivity extends AppCompatActivity {
                 }else {
                     //로그인 실패
                     Log.e(TAG, "invoke: login fail" );
+                    Toast.makeText(getApplicationContext(),"Kakao login authentication failed",Toast.LENGTH_SHORT).show();
                 }
 
                 return null;
@@ -213,7 +223,7 @@ public class LoginActivity extends AppCompatActivity {
                             String receivedUserName = response.getString("userName");
                             String receivedUserAge = response.getString("userAge");
 
-                            Toast.makeText(getApplicationContext(),"로그인에 성공하였습니다.",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"Login success!",Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra("userID", receivedUserID);
                             intent.putExtra("userPassword", receivedUserPassword);
@@ -221,7 +231,7 @@ public class LoginActivity extends AppCompatActivity {
                             intent.putExtra("userAge", receivedUserAge);
                             startActivity(intent);
                         } else { // 로그인에 실패한 경우
-                            Toast.makeText(getApplicationContext(),"계정이 존재하지 않습니다.",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"No such account",Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                             intent.putExtra("userID", accountId);
                             startActivity(intent);
@@ -236,7 +246,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("Error.Response", error.toString());
-                    Toast.makeText(getApplicationContext(),"서버 오류로 로그인에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Log in failed: server error",Toast.LENGTH_SHORT).show();
                 }
             };
 
@@ -259,20 +269,53 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (user != null) {
 
-                    // 유저의 아이디
-                    Log.d(TAG, "invoke: id =" + user.getId());
-                    // 유저의 이메일
-                    Log.d(TAG, "invoke: email =" + user.getKakaoAccount().getEmail());
-                    // 유저의 닉네임
-                    Log.d(TAG, "invoke: nickname =" + user.getKakaoAccount().getProfile().getNickname());
-                    // 유저의 성별
-                    Log.d(TAG, "invoke: gender =" + user.getKakaoAccount().getGender());
-                    // 유저의 연령대
-                    Log.d(TAG, "invoke: age=" + user.getKakaoAccount().getAgeRange());
+                    String accountId = user.getId().toString();
 
+                    Response.Listener<JSONObject> responseListener = new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                boolean success = response.getBoolean("success");
+                                if (success) { // 확인에 성공한 경우
+                                    String receivedUserID = response.getString("userID");
+                                    String receivedUserPassword = response.getString("userPassword");
+                                    String receivedUserName = response.getString("userName");
+                                    String receivedUserAge = response.getString("userAge");
+
+                                    Toast.makeText(getApplicationContext(),"Login success!",Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    intent.putExtra("userID", receivedUserID);
+                                    intent.putExtra("userPassword", receivedUserPassword);
+                                    intent.putExtra("userName", receivedUserName);
+                                    intent.putExtra("userAge", receivedUserAge);
+                                    startActivity(intent);
+                                } else { // 로그인에 실패한 경우
+                                    Toast.makeText(getApplicationContext(),"No such account",Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                                    intent.putExtra("userID", accountId);
+                                    startActivity(intent);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+
+                    Response.ErrorListener errorListener = new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("Error.Response", error.toString());
+                            Toast.makeText(getApplicationContext(),"Log in failed: server error",Toast.LENGTH_SHORT).show();
+                        }
+                    };
+
+                    // 서버로 Volley를 이용해서 요청을 함.
+                    UserRequest userRequest = new UserRequest(accountId, responseListener, errorListener);
+                    RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+                    queue.add(userRequest);
 
                 } else {
-
+                    Toast.makeText(getApplicationContext(),"Unexpected Error",Toast.LENGTH_SHORT).show();
                 }
                 return null;
             }
