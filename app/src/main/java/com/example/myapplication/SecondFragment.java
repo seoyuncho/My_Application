@@ -1,15 +1,8 @@
 package com.example.myapplication;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
@@ -27,90 +19,89 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class SecondFragment extends Fragment {
-    private static MediaPlayer player;
-    private TextView titleView;
-    private ImageButton playButton;
-    private static SeekBar seekBar;
-    private static boolean checkplay = false;
-    private boolean firstcheckplay = false;
-
-    static class t1 extends Thread {
-        public void run() {
-            while (checkplay) {
-                seekBar.setProgress(player.getCurrentPosition());
-            }
-        }
-    }
-
-    Button btnprev, btnnext, btnplay, btnff, btnfr;
-    TextView txtsname, txtsstart, txtsstop;
-    SeekBar seekmusic;
-    BarVisualizer visualizer;
-    ImageView imageView;
-
-    static MediaPlayer mediaPlayer;
-    int position;
-    ArrayList<UserPlaylist> mySongs;
-    Thread updateseekbar;
-    public Bundle bundle;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_second, container, false);
-
-        // Initialize UI elements from the fragment's layout
-        titleView = rootView.findViewById(R.id.titleView);
-        seekBar = rootView.findViewById(R.id.seekBar);
-        playButton = rootView.findViewById(R.id.playButton);
-
-        // Initialize MediaPlayer
-        player = MediaPlayer.create(getActivity(), R.raw.congratulations);
-
-
-        seekBar.setMax(player.getDuration());
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean check) {
-                if (check) {
-                    player.seekTo(progress);
-                }
-
-                if(seekBar.getMax()==progress){ //끌어서 마지막으로 놓으면 멈추게 해야 한다.
-                    checkplay = false;
-                    player.stop();
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekbar) {
-
-                checkplay = false;
-                player.pause();
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekbar) {
-                if(firstcheckplay){
-                    checkplay = true;
-                    player.seekTo(seekBar.getProgress());
-                    player.start();
-                    new t1().start();
-                }else{
-                    checkplay = true;
-                    player.seekTo(seekBar.getProgress());
-                }
-
-            }
-
-        });
-
-        return rootView;
-    }
+//    private static MediaPlayer player;
+//    private TextView titleView;
+//    private ImageButton playButton;
+//    private static SeekBar seekBar;
+//    private static boolean checkplay = false;
+//    private boolean firstcheckplay = false;
+//
+//    static class t1 extends Thread {
+//        public void run() {
+//            while (checkplay) {
+//                seekBar.setProgress(player.getCurrentPosition());
+//            }
+//        }
+//    }
+//
+//    Button btnprev, btnnext, btnplay, btnff, btnfr;
+//    TextView txtsname, txtsstart, txtsstop;
+//    SeekBar seekmusic;
+//    BarVisualizer visualizer;
+//    ImageView imageView;
+//
+//    static MediaPlayer mediaPlayer;
+//    int position;
+//    ArrayList<UserPlaylist> mySongs;
+//    Thread updateseekbar;
+//    public Bundle bundle;
+//
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//        View rootView = inflater.inflate(R.layout.activity_player, container, false);
+//
+//        // Initialize UI elements from the fragment's layout
+//        titleView = rootView.findViewById(R.id.titleView);
+//        seekBar = rootView.findViewById(R.id.seekBar);
+//        playButton = rootView.findViewById(R.id.playButton);
+//
+//        // Initialize MediaPlayer
+//        player = MediaPlayer.create(getActivity(), R.raw.congratulations);
+//
+//
+//        seekBar.setMax(player.getDuration());
+//        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean check) {
+//                if (check) {
+//                    player.seekTo(progress);
+//                }
+//
+//                if(seekBar.getMax()==progress){ //끌어서 마지막으로 놓으면 멈추게 해야 한다.
+//                    checkplay = false;
+//                    player.stop();
+//                }
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekbar) {
+//
+//                checkplay = false;
+//                player.pause();
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekbar) {
+//                if(firstcheckplay){
+//                    checkplay = true;
+//                    player.seekTo(seekBar.getProgress());
+//                    player.start();
+//                    new t1().start();
+//                }else{
+//                    checkplay = true;
+//                    player.seekTo(seekBar.getProgress());
+//                }
+//
+//            }
+//
+//        });
+//
+//        return rootView;
+//    }
 
 //    Button btnprev, btnnext, btnplay, btnff, btnfr;
 //    TextView txtsname, txtsstart, txtsstop;
@@ -358,27 +349,27 @@ public class SecondFragment extends Fragment {
 //
 //        return time;
 //    }
-
-    private ArrayList<UserPlaylist> getUserPlaylist() {
-        // 여기서 네트워크나 로컬 DB에서 데이터를 가져오는 로직을 구현해야 해
-        ArrayList<UserPlaylist> playlists = new ArrayList<>();
-
-        if (bundle != null) {
-            String songRows = bundle.getString("songRows");
-            try {
-                // Parse the JSON array string
-                JSONArray playlistData = new JSONArray(songRows);
-
-                // Iterate through the playlistData and create UserPlaylist objects
-                for (int i = 0; i < playlistData.length(); i++) {
-                    JSONObject songInfo = playlistData.getJSONObject(i);
-                    playlists.add(new UserPlaylist(songInfo.getString("songname"), songInfo.getString("singer")));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                // Handle JSON parsing error
-            }
-        }
-        return playlists;
-    }
+//
+//    private ArrayList<UserPlaylist> getUserPlaylist() {
+//        // 여기서 네트워크나 로컬 DB에서 데이터를 가져오는 로직을 구현해야 해
+//        ArrayList<UserPlaylist> playlists = new ArrayList<>();
+//
+//        if (bundle != null) {
+//            String songRows = bundle.getString("songRows");
+//            try {
+//                // Parse the JSON array string
+//                JSONArray playlistData = new JSONArray(songRows);
+//
+//                // Iterate through the playlistData and create UserPlaylist objects
+//                for (int i = 0; i < playlistData.length(); i++) {
+//                    JSONObject songInfo = playlistData.getJSONObject(i);
+//                    playlists.add(new UserPlaylist(songInfo.getString("songname"), songInfo.getString("singer")));
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//                // Handle JSON parsing error
+//            }
+//        }
+//        return playlists;
+//    }
 }
