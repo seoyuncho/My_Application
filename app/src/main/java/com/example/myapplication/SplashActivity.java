@@ -10,7 +10,7 @@ public class SplashActivity extends AppCompatActivity {
 
     protected  void onCreate( Bundle savedInstance) {
         super.onCreate(savedInstance);
-        setContentView(R.layout.splash_activity);
+        setContentView(R.layout.activity_splash);
 
         //splash 3초 동안 뜨게 한다.
         Handler hd = new Handler();
