@@ -63,11 +63,10 @@ public class RegisterActivity extends AppCompatActivity {
 
 
                 Boolean isEmptyText = TextUtils.isEmpty(userID) || TextUtils.isEmpty(userPass) || TextUtils.isEmpty(userName) || TextUtils.isEmpty(userAge_str);
-                Log.d("ccheck", isEmptyText.toString());
 
                 if(isEmptyText) { //editText가 비어있다면
                     Toast.makeText(getBaseContext(), "Please fill in the remaining blanks", Toast.LENGTH_SHORT).show();
-
+                    return;
                 }
 
                 Response.Listener<JSONObject> responseListener = new Response.Listener<JSONObject>() {
