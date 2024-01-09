@@ -24,9 +24,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -36,6 +38,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
+import com.kakao.sdk.user.model.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -198,13 +201,49 @@ public class LoginActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             String accountId = account != null ? account.getId() : "";
-            String displayName = account != null ? account.getDisplayName() : "";
-//            String photoUrl = account != null && account.getPhotoUrl() != null ? account.getPhotoUrl().toString() : "";
 
-            Log.d("로그인한 유저의 아디", accountId);
-            Log.d("로그인한 유저의 전체이름", displayName);
-//            Log.d("로그인한 유저의 프로필 사진의 주소", photoUrl);
+            Response.Listener<JSONObject> responseListener = new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        boolean success = response.getBoolean("success");
+                        if (success) { // 확인에 성공한 경우
+                            String receivedUserID = response.getString("userID");
+                            String receivedUserPassword = response.getString("userPassword");
+                            String receivedUserName = response.getString("userName");
+                            String receivedUserAge = response.getString("userAge");
 
+                            Toast.makeText(getApplicationContext(),"로그인에 성공하였습니다.",Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra("userID", receivedUserID);
+                            intent.putExtra("userPassword", receivedUserPassword);
+                            intent.putExtra("userName", receivedUserName);
+                            intent.putExtra("userAge", receivedUserAge);
+                            startActivity(intent);
+                        } else { // 로그인에 실패한 경우
+                            Toast.makeText(getApplicationContext(),"계정이 존재하지 않습니다.",Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                            intent.putExtra("userID", accountId);
+                            startActivity(intent);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            Response.ErrorListener errorListener = new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Error.Response", error.toString());
+                    Toast.makeText(getApplicationContext(),"서버 오류로 로그인에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+                }
+            };
+
+            // 서버로 Volley를 이용해서 요청을 함.
+            UserRequest userRequest = new UserRequest(accountId, responseListener, errorListener);
+            RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+            queue.add(userRequest);
 
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
@@ -214,6 +253,29 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handleKakaoLogin() {
+        UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
+            @Override
+            public Unit invoke(User user, Throwable throwable) {
 
+                if (user != null) {
+
+                    // 유저의 아이디
+                    Log.d(TAG, "invoke: id =" + user.getId());
+                    // 유저의 이메일
+                    Log.d(TAG, "invoke: email =" + user.getKakaoAccount().getEmail());
+                    // 유저의 닉네임
+                    Log.d(TAG, "invoke: nickname =" + user.getKakaoAccount().getProfile().getNickname());
+                    // 유저의 성별
+                    Log.d(TAG, "invoke: gender =" + user.getKakaoAccount().getGender());
+                    // 유저의 연령대
+                    Log.d(TAG, "invoke: age=" + user.getKakaoAccount().getAgeRange());
+
+
+                } else {
+
+                }
+                return null;
+            }
+        });
     }
 }

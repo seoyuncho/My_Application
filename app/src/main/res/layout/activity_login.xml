@@ -45,7 +45,6 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="ID"
-                android:inputType="textPersonName"
                 android:drawableEnd="@drawable/done_icon"/>
 
             <View
@@ -58,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="PASSWORD"
-                android:inputType="textPersonName"
+                android:inputType="textPassword"
                 android:drawableEnd="@drawable/lock_icon"/>
 
             <Button
