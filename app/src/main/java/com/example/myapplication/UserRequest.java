@@ -5,23 +5,22 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-public class LoginRequest extends JsonObjectRequest {
+public class UserRequest extends JsonObjectRequest {
 
     // Server URL
-    final static private String URL = "http://143.248.218.164:3000/login";
+    final static private String URL = "http://143.248.218.164:3000/check-user";
 
     // JSON data to be sent to the server
     private JSONObject jsonBody;
 
 
-    public LoginRequest(String userID, String userPassword, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+    public UserRequest(String userID, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         super(Method.POST, URL, null, listener, errorListener);
 
         // Create JSON object
         jsonBody = new JSONObject();
         try {
             jsonBody.put("userID", userID);
-            jsonBody.put("userPassword", userPassword);
         } catch (Exception e) {
             e.printStackTrace();
         }

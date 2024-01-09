@@ -3,6 +3,8 @@ package com.example.myapplication;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +35,14 @@ public class RegisterActivity extends AppCompatActivity {
         et_name = findViewById(R.id.et_name);
         et_age = findViewById(R.id.et_age);
 
+
+        Intent intent = getIntent();
+
+        if(!TextUtils.isEmpty(intent.getStringExtra("userID"))){
+            et_id.setText(intent.getStringExtra("userID"));
+            et_id.setInputType(InputType.TYPE_NULL);
+        }
+
         // 회원가입 버튼 클릭 시 수행
         btn_register = findViewById(R.id.btn_register);
         btn_register.setOnClickListener(new View.OnClickListener() {
@@ -42,7 +52,23 @@ public class RegisterActivity extends AppCompatActivity {
                 String userID = et_id.getText().toString();
                 String userPass = et_pass.getText().toString();
                 String userName = et_name.getText().toString();
-                int userAge = Integer.parseInt(et_age.getText().toString());
+                String userAge_str = et_age.getText().toString();
+                int userAge;
+
+                try {
+                    userAge = Integer.parseInt(userAge_str);
+                } catch (NumberFormatException e) {
+                    userAge = 0;
+                }
+
+
+                Boolean isEmptyText = TextUtils.isEmpty(userID) || TextUtils.isEmpty(userPass) || TextUtils.isEmpty(userName) || TextUtils.isEmpty(userAge_str);
+                Log.d("ccheck", isEmptyText.toString());
+
+                if(isEmptyText) { //editText가 비어있다면
+                    Toast.makeText(getBaseContext(), "Please fill in the remaining blanks", Toast.LENGTH_SHORT).show();
+
+                }
 
                 Response.Listener<JSONObject> responseListener = new Response.Listener<JSONObject>() {
                     @Override
