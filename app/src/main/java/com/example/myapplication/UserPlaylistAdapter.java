@@ -15,9 +15,21 @@ import java.util.ArrayList;
 public class UserPlaylistAdapter extends RecyclerView.Adapter<UserPlaylistAdapter.PlaylistViewHolder> {
 
     private ArrayList<UserPlaylist> userPlaylistArrayList;
+    private OnItemClickListener listener;
 
     public UserPlaylistAdapter(ArrayList<UserPlaylist> userPlaylistArrayList) {
         this.userPlaylistArrayList = userPlaylistArrayList;
+    }
+
+
+    // Interface for item click handling
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    // Setter for item click listener
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -32,6 +44,16 @@ public class UserPlaylistAdapter extends RecyclerView.Adapter<UserPlaylistAdapte
         UserPlaylist userPlaylist = userPlaylistArrayList.get(position);
         holder.songNameTextView.setText(userPlaylist.getSongName());
         holder.singerTextView.setText(userPlaylist.getSinger());
+
+        // Set click listener for the item view
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onItemClick(position);
+                }
+            }
+        });
     }
 
     @Override

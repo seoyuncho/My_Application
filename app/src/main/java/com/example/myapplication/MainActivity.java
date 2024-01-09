@@ -83,24 +83,24 @@ public class MainActivity extends AppCompatActivity
         });
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setSelectedItemId(R.id.person);
+        bottomNavigationView.setSelectedItemId(R.id.player);
     }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item)
     {
-        if (item.getItemId() == R.id.person) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.flFragment, firstFragment)
-                    .commit();
-            return true;
-        } else if (item.getItemId() == R.id.home) {
+        if (item.getItemId() == R.id.player) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.flFragment, secondFragment)
                     .commit();
             return true;
-        } else if (item.getItemId() == R.id.settings) {
+        } else if (item.getItemId() == R.id.home) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragment, firstFragment)
+                    .commit();
+            return true;
+        } else if (item.getItemId() == R.id.person) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.flFragment, thirdFragment)

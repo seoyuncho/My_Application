@@ -51,6 +51,31 @@ public class ThirdFragment extends Fragment {
             }
         });
 
+        // Set item click listener for the recyclerView
+        userPlaylistAdapter.setOnItemClickListener(new UserPlaylistAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                // Handle item click here
+                // You can get the clicked UserPlaylist object from the userPlaylistArrayList
+                UserPlaylist clickedPlaylist = userPlaylistArrayList.get(position);
+
+                // Create a bundle to pass data to SecondFragment
+                Bundle bundle = new Bundle();
+                bundle.putString("songname", clickedPlaylist.getSongName());
+                bundle.putString("singer", clickedPlaylist.getSinger());
+
+                // Create a new instance of SecondFragment and set the arguments
+                SecondFragment secondFragment = new SecondFragment();
+                secondFragment.setArguments(bundle);
+
+                // Replace the current fragment with SecondFragment
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.flFragment, secondFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
         return view;
     }
 
