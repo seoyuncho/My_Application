@@ -59,7 +59,7 @@
                 android:ems="10"
                 android:hint="PASSWORD"
                 android:inputType="textPersonName"
-                android:drawableEnd="@drawable/password_icon"/>
+                android:drawableEnd="@drawable/lock_icon"/>
 
             <Button
                 android:id="@+id/btn_login"

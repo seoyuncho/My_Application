@@ -2,12 +2,12 @@ package com.example.myapplication;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,18 +27,18 @@ import java.util.ArrayList;
 
 public class SecondFragment extends Fragment {
 
-    Button btnplay, btnnext, btnprev, btnff, btnfr;
+    Button btnprev, btnnext, btnplay, btnff, btnfr;
     TextView txtsname, txtsstart, txtsstop;
     SeekBar seekmusic;
     BarVisualizer visualizer;
     ImageView imageView;
 
     String sname;
-    public static final String EXTRA_NAME = "songname";
     static MediaPlayer mediaPlayer;
     int position;
-    ArrayList<File> mySongs;
+    ArrayList<UserPlaylist> mySongs; // 변경된 부분
     Thread updateseekbar;
+    public Bundle bundle;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,42 +61,40 @@ public class SecondFragment extends Fragment {
             mediaPlayer.release();
         }
 
-        Intent i = requireActivity().getIntent();
-        Bundle bundle = i.getExtras();
-
-        mySongs = (ArrayList) bundle.getParcelableArrayList("songs");
-        String songName = i.getStringExtra("song_name");
-        position = bundle.getInt("pos", 0);
+        bundle = getArguments();
+        mySongs = bundle.getParcelableArrayList("songs");
+        String songName = mySongs.get(0).getSongName();
+        position = 0;
         txtsname.setSelected(true);
-        Uri uri = Uri.parse(mySongs.get(position).toString());
-        sname = mySongs.get(position).getName();
+        int rawResourceId = R.raw.congratulations;
+        Uri uri = Uri.parse(mySongs.get(position).getSongPath(rawResourceId));
+        sname = mySongs.get(position).getSongName();
         txtsname.setText(sname);
 
-        mediaPlayer = MediaPlayer.create(requireContext(), uri);
-        mediaPlayer.start();
-
-        updateseekbar = new Thread() {
-            @Override
-            public void run() {
-                int totalDuration = mediaPlayer.getDuration();
-                int currentposition = 0;
-
-                while (currentposition < totalDuration) {
-                    try {
-                        sleep(500);
-                        currentposition = mediaPlayer.getCurrentPosition();
-                        seekmusic.setProgress(currentposition);
-                    } catch (InterruptedException | IllegalStateException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        seekmusic.setMax(mediaPlayer.getDuration());
-        updateseekbar.start();
-        seekmusic.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-        seekmusic.getThumb().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-
+        //mediaPlayer = MediaPlayer.create(requireContext(), uri);
+//        mediaPlayer.start();
+//
+//        updateseekbar = new Thread() {
+//            @Override
+//            public void run() {
+//                int totalDuration = mediaPlayer.getDuration();
+//                int currentposition = 0;
+//
+//                while (currentposition < totalDuration) {
+//                    try {
+//                        sleep(500);
+//                        currentposition = mediaPlayer.getCurrentPosition();
+//                        seekmusic.setProgress(currentposition);
+//                    } catch (InterruptedException | IllegalStateException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        };
+//
+//        seekmusic.setMax(mediaPlayer.getDuration());
+//        updateseekbar.start();
+//        seekmusic.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary
         seekmusic.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -111,7 +109,6 @@ public class SecondFragment extends Fragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mediaPlayer.seekTo(seekBar.getProgress());
-
             }
         });
 
@@ -161,9 +158,11 @@ public class SecondFragment extends Fragment {
                 mediaPlayer.stop();
                 mediaPlayer.release();
                 position = ((position + 1) % mySongs.size());
-                Uri u = Uri.parse(mySongs.get(position).toString());
+                UserPlaylist nextSong = mySongs.get(position);
+                int rawResourceId = R.raw.congratulations;
+                Uri u = Uri.parse(nextSong.getSongPath(rawResourceId));
                 mediaPlayer = MediaPlayer.create(requireContext(), u);
-                sname = mySongs.get(position).getName();
+                sname = nextSong.getSongName();
                 txtsname.setText(sname);
                 mediaPlayer.start();
                 btnplay.setBackgroundResource(R.drawable.ic_stop_foreground);
@@ -172,7 +171,6 @@ public class SecondFragment extends Fragment {
                 if (audiosessionId != -1) {
                     visualizer.setAudioSessionId(audiosessionId);
                 }
-
             }
         });
 
@@ -182,10 +180,10 @@ public class SecondFragment extends Fragment {
                 mediaPlayer.stop();
                 mediaPlayer.release();
                 position = ((position - 1) < 0) ? (mySongs.size() - 1) : (position - 1);
-
-                Uri u = Uri.parse(mySongs.get(position).toString());
+                UserPlaylist prevSong = mySongs.get(position);
+                Uri u = Uri.parse(prevSong.getSongPath(rawResourceId));
                 mediaPlayer = MediaPlayer.create(requireContext(), u);
-                sname = mySongs.get(position).getName();
+                sname = prevSong.getSongName();
                 txtsname.setText(sname);
                 mediaPlayer.start();
                 btnplay.setBackgroundResource(R.drawable.ic_stop_foreground);
@@ -217,7 +215,6 @@ public class SecondFragment extends Fragment {
 
         return view;
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

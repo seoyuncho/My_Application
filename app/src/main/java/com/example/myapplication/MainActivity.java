@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity
 
 
     public void getUserSongs(String userID, final SongCallback callback) {
-        String url = "http://143.248.218.196:3000/user-songs/" + userID;
+        String url = "http://143.248.218.164:3000/user-songs/" + userID;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getUserFriends(String userID, final FriendCallback callback) {
-        String url = "http://143.248.218.196:3000/user-friends/" + userID;
+        String url = "http://143.248.218.164:3000/user-friends/" + userID;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
