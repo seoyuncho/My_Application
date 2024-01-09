@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -26,50 +27,121 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class SecondFragment extends Fragment {
+    private static MediaPlayer player;
+    private TextView titleView;
+    private ImageButton playButton;
+    private static SeekBar seekBar;
+    private static boolean checkplay = false;
+    private boolean firstcheckplay = false;
 
-    Button btnprev, btnnext, btnplay, btnff, btnfr;
-    TextView txtsname, txtsstart, txtsstop;
-    SeekBar seekmusic;
-    BarVisualizer visualizer;
-    ImageView imageView;
-
-    String sname;
-    static MediaPlayer mediaPlayer;
-    int position;
-    ArrayList<UserPlaylist> mySongs;
-    Thread updateseekbar;
-    public Bundle bundle;
+    static class t1 extends Thread {
+        public void run() {
+            while (checkplay) {
+                seekBar.setProgress(player.getCurrentPosition());
+            }
+        }
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_second, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_second, container, false);
 
-        btnprev = view.findViewById(R.id.btnprev);
-        btnnext = view.findViewById(R.id.btnnext);
-        btnplay = view.findViewById(R.id.playbtn);
-        btnff = view.findViewById(R.id.btnff);
-        btnfr = view.findViewById(R.id.btnfr);
-        txtsname = view.findViewById(R.id.txtsn);
-        txtsstart = view.findViewById(R.id.txtsstart);
-        txtsstop = view.findViewById(R.id.txtsstop);
-        seekmusic = view.findViewById(R.id.seekbar);
-        visualizer = view.findViewById(R.id.blast);
-        imageView = view.findViewById(R.id.imageview);
+        // Initialize UI elements from the fragment's layout
+        titleView = rootView.findViewById(R.id.titleView);
+        seekBar = rootView.findViewById(R.id.seekBar);
+        playButton = rootView.findViewById(R.id.playButton);
 
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-        }
+        // Initialize MediaPlayer
+        player = MediaPlayer.create(getActivity(), R.raw.congratulations);
 
-        bundle = getArguments();
-//        mySongs = bundle.getParcelableArrayList("songs");
-//        String songName = mySongs.get(0).getSongName();
-        position = 0;
-        txtsname.setSelected(true);
-        int rawResourceId = R.raw.congratulations;
-//        Uri uri = Uri.parse(mySongs.get(position).getSongPath(rawResourceId));
-//        sname = mySongs.get(position).getSongName();
-        txtsname.setText(sname);
+
+        seekBar.setMax(player.getDuration());
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean check) {
+                if (check) {
+                    player.seekTo(progress);
+                }
+
+                if(seekBar.getMax()==progress){ //끌어서 마지막으로 놓으면 멈추게 해야 한다.
+                    checkplay = false;
+                    player.stop();
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekbar) {
+
+                checkplay = false;
+                player.pause();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekbar) {
+                if(firstcheckplay){
+                    checkplay = true;
+                    player.seekTo(seekBar.getProgress());
+                    player.start();
+                    new t1().start();
+                }else{
+                    checkplay = true;
+                    player.seekTo(seekBar.getProgress());
+                }
+
+            }
+
+        });
+
+        return rootView;
+    }
+
+
+
+
+//    Button btnprev, btnnext, btnplay, btnff, btnfr;
+//    TextView txtsname, txtsstart, txtsstop;
+//    SeekBar seekmusic;
+//    BarVisualizer visualizer;
+//    ImageView imageView;
+//
+//    String sname;
+//    static MediaPlayer mediaPlayer;
+//    int position;
+//    ArrayList<UserPlaylist> mySongs;
+//    Thread updateseekbar;
+//    public Bundle bundle;
+//
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        View view = inflater.inflate(R.layout.fragment_second, container, false);
+//
+//        btnprev = view.findViewById(R.id.btnprev);
+//        btnnext = view.findViewById(R.id.btnnext);
+//        btnplay = view.findViewById(R.id.playbtn);
+//        btnff = view.findViewById(R.id.btnff);
+//        btnfr = view.findViewById(R.id.btnfr);
+//        txtsname = view.findViewById(R.id.txtsn);
+//        txtsstart = view.findViewById(R.id.txtsstart);
+//        txtsstop = view.findViewById(R.id.txtsstop);
+//        seekmusic = view.findViewById(R.id.seekbar);
+//        visualizer = view.findViewById(R.id.blast);
+//        imageView = view.findViewById(R.id.imageview);
+//
+//        if (mediaPlayer != null) {
+//            mediaPlayer.stop();
+//            mediaPlayer.release();
+//        }
+//
+//        bundle = getArguments();
+////        mySongs = bundle.getParcelableArrayList("songs");
+////        String songName = mySongs.get(0).getSongName();
+//        position = 0;
+//        txtsname.setSelected(true);
+//        int rawResourceId = R.raw.congratulations;
+////        Uri uri = Uri.parse(mySongs.get(position).getSongPath(rawResourceId));
+////        sname = mySongs.get(position).getSongName();
+//        txtsname.setText(sname);
 
 //        //mediaPlayer = MediaPlayer.create(requireContext(), uri);
 ////        mediaPlayer.start();
@@ -213,8 +285,8 @@ public class SecondFragment extends Fragment {
 //            }
 //        });
 //
-        return view;
-    }
+//        return view;
+//    }
 //    @Override
 //    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 //        if (item.getItemId() == android.R.id.home) {

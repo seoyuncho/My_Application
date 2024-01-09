@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                                 String receivedUserAge = response.getString("userAge");
 
                                 Toast.makeText(getApplicationContext(),"Login success!",Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, PlayerActivity.class);
                                 intent.putExtra("userID", receivedUserID);
                                 intent.putExtra("userPassword", receivedUserPassword);
                                 intent.putExtra("userName", receivedUserName);
@@ -224,7 +224,7 @@ public class LoginActivity extends AppCompatActivity {
                             String receivedUserAge = response.getString("userAge");
 
                             Toast.makeText(getApplicationContext(),"Login success!",Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, PlayerActivity.class);
                             intent.putExtra("userID", receivedUserID);
                             intent.putExtra("userPassword", receivedUserPassword);
                             intent.putExtra("userName", receivedUserName);
@@ -283,7 +283,7 @@ public class LoginActivity extends AppCompatActivity {
                                     String receivedUserAge = response.getString("userAge");
 
                                     Toast.makeText(getApplicationContext(),"Login success!",Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    Intent intent = new Intent(LoginActivity.this, PlayerActivity.class);
                                     intent.putExtra("userID", receivedUserID);
                                     intent.putExtra("userPassword", receivedUserPassword);
                                     intent.putExtra("userName", receivedUserName);
