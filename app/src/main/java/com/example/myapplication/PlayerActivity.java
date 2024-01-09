@@ -32,8 +32,13 @@ public class PlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
+        Intent intent = getIntent();
+        String songname = intent.getStringExtra("songname");
+
+
         // 음악 제목
         titleView = findViewById(R.id.titleView);
+        titleView.setText(songname);
         // 음악 탐색바
         seekBar = findViewById(R.id.seekBar);
 

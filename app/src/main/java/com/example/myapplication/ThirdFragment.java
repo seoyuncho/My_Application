@@ -4,6 +4,7 @@ package com.example.myapplication;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,21 +60,12 @@ public class ThirdFragment extends Fragment {
                 // You can get the clicked UserPlaylist object from the userPlaylistArrayList
                 UserPlaylist clickedPlaylist = userPlaylistArrayList.get(position);
 
-                // Create a bundle to pass data to SecondFragment
-                Bundle bundle = new Bundle();
-                bundle.putString("songname", clickedPlaylist.getSongName());
-                bundle.putString("singer", clickedPlaylist.getSinger());
-                bundle.putString("source", "ThirdFragment");
-
-                // Create a new instance of SecondFragment and set the arguments
-                SecondFragment secondFragment = new SecondFragment();
-                secondFragment.setArguments(bundle);
-
-                // Replace the current fragment with SecondFragment
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.flFragment, secondFragment)
-                        .addToBackStack(null)
-                        .commit();
+                // PlayerActivity 호출
+                Intent intent = new Intent(getActivity(),PlayerActivity.class);
+                intent.putExtra("songname", clickedPlaylist.getSongName());
+                intent.putExtra("singer", clickedPlaylist.getSinger());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
             }
         });
 

@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -26,7 +25,6 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private BottomNavigationView bottomNavigationView;
     private FirstFragment firstFragment;
-    private SecondFragment secondFragment;
     private ThirdFragment thirdFragment;
     private Bundle bundle = new Bundle();
 
@@ -37,9 +35,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setBackgroundColor(Color.BLACK);
         firstFragment = new FirstFragment();
-        secondFragment = new SecondFragment();
         thirdFragment = new ThirdFragment();
 
         getUserFriends("id", new FriendCallback() {
@@ -83,19 +79,14 @@ public class MainActivity extends AppCompatActivity
                 Log.e("VolleyError", "Error: " + errorMessage);
             }
         });
+
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setSelectedItemId(R.id.player);
+        bottomNavigationView.setSelectedItemId(R.id.home);
     }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item)
     {
-        if (item.getItemId() == R.id.player) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.flFragment, secondFragment)
-                    .commit();
-            return true;
-        } else if (item.getItemId() == R.id.home) {
+        if (item.getItemId() == R.id.home) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.flFragment, firstFragment)
@@ -136,8 +127,6 @@ public class MainActivity extends AppCompatActivity
                             // Assuming the songs are stored as a JSONArray in the response
                             JSONArray songRows = response.getJSONArray("songs");
                             bundle.putString("songRows", songRows.toString());
-                            firstFragment.setArguments(bundle);
-                            secondFragment.setArguments(bundle);
                             thirdFragment.setArguments(bundle);
                             callback.onSongsReceived(songRows);
                         } catch (JSONException e) {
