@@ -38,7 +38,19 @@ public class MainActivity extends AppCompatActivity
         firstFragment = new FirstFragment();
         thirdFragment = new ThirdFragment();
 
-        getUserFriends("id", new FriendCallback() {
+
+        Intent intent = getIntent();
+        String userID = intent.getStringExtra("userID");
+        String userPassword = intent.getStringExtra("userPassword");
+        String userName = intent.getStringExtra("userName");
+        String userAge = intent.getStringExtra("userAge");
+
+        bundle.putString("userID", userID);
+        bundle.putString("userPassword", userPassword);
+        bundle.putString("userName", userName);
+        bundle.putString("userAge", userAge);
+
+        getUserFriends(userID, new FriendCallback() {
             @Override
             public void onFriendsReceived(JSONArray friends) {
 //                // Handle the received songs (songRows)
@@ -54,18 +66,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        Intent intent = getIntent();
-        String userID = intent.getStringExtra("userID");
-        String userPassword = intent.getStringExtra("userPassword");
-        String userName = intent.getStringExtra("userName");
-        String userAge = intent.getStringExtra("userAge");
-
-        bundle.putString("userID", userID);
-        bundle.putString("userPassword", userPassword);
-        bundle.putString("userName", userName);
-        bundle.putString("userAge", userAge);
-
-        getUserSongs("id", new SongCallback() {
+        getUserSongs(userID, new SongCallback() {
             @Override
             public void onSongsReceived(JSONArray songRows) {
                 // Handle the received songs (songRows)
