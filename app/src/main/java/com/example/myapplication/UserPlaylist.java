@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import com.gauravk.audiovisualizer.BuildConfig;
+
 public class UserPlaylist {
     private String songName;
     private String singer;
@@ -10,4 +12,8 @@ public class UserPlaylist {
 
     public String getSongName() { return songName; }
     public String getSinger() { return singer;}
+    public String getSongPath(int rawResourceId) {
+        String path = "android.resource://" + BuildConfig.APPLICATION_ID + "/" + rawResourceId;
+        return path;
+    }
 }
