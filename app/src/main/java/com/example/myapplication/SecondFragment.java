@@ -22,6 +22,10 @@ import androidx.fragment.app.Fragment;
 
 import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -33,7 +37,6 @@ public class SecondFragment extends Fragment {
     BarVisualizer visualizer;
     ImageView imageView;
 
-    String sname;
     static MediaPlayer mediaPlayer;
     int position;
     ArrayList<UserPlaylist> mySongs;
@@ -61,15 +64,26 @@ public class SecondFragment extends Fragment {
             mediaPlayer.release();
         }
 
-        bundle = getArguments();
+//        bundle = getArguments();
+//        if (bundle != null) {
+//            // Check if a specific key is present in the bundle to determine the source
+//            if (bundle.containsKey("source") && bundle.getString("source").equals("ThirdFragment")) {
+//                getUserPlaylist
+//                txtsname.setSelected(true);
+//                txtsname.setText(playlists.get(0));
+//            } else {
+//                // SecondFragment was directly navigated from MainActivity
+//                // Handle it accordingly
+//            }
+//        }
+
 //        mySongs = bundle.getParcelableArrayList("songs");
 //        String songName = mySongs.get(0).getSongName();
-        position = 0;
-        txtsname.setSelected(true);
-        int rawResourceId = R.raw.congratulations;
+//        position = 0;));
+//        int rawResourceId = R.raw.congratulations;
 //        Uri uri = Uri.parse(mySongs.get(position).getSongPath(rawResourceId));
 //        sname = mySongs.get(position).getSongName();
-        txtsname.setText(sname);
+
 
 //        //mediaPlayer = MediaPlayer.create(requireContext(), uri);
 ////        mediaPlayer.start();
@@ -253,4 +267,27 @@ public class SecondFragment extends Fragment {
 //
 //        return time;
 //    }
+
+    private ArrayList<UserPlaylist> getUserPlaylist() {
+        // 여기서 네트워크나 로컬 DB에서 데이터를 가져오는 로직을 구현해야 해
+        ArrayList<UserPlaylist> playlists = new ArrayList<>();
+
+        if (bundle != null) {
+            String songRows = bundle.getString("songRows");
+            try {
+                // Parse the JSON array string
+                JSONArray playlistData = new JSONArray(songRows);
+
+                // Iterate through the playlistData and create UserPlaylist objects
+                for (int i = 0; i < playlistData.length(); i++) {
+                    JSONObject songInfo = playlistData.getJSONObject(i);
+                    playlists.add(new UserPlaylist(songInfo.getString("songname"), songInfo.getString("singer")));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                // Handle JSON parsing error
+            }
+        }
+        return playlists;
+    }
 }
