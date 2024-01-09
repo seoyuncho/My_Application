@@ -20,7 +20,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
 
 import java.io.File;
 import java.util.ArrayList;
