@@ -14,7 +14,7 @@ import android.os.Bundle;
 public class PlayerActivity extends AppCompatActivity {
     MediaPlayer player;
     TextView titleView;
-    Button playButton;
+    Button playButton, appStartButton;
     SeekBar seekBar;
     boolean checkplay = false;
     boolean firstcheckplay = false;
@@ -46,9 +46,16 @@ public class PlayerActivity extends AppCompatActivity {
         playButton = findViewById(R.id.playButton);
 
         // MediaPlayer 음악 재생 관련 객체
-//        player = MediaPlayer.create(this, R.raw.congratulations);
-
-
+        player = MediaPlayer.create(this, R.raw.congratulations);
+        appStartButton = findViewById(R.id.appStartButton);
+        appStartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 버튼을 클릭했을 때 MainActivity로 전환하는 코드
+                Intent intent = new Intent(PlayerActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         seekBar.setMax(player.getDuration());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
