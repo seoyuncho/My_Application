@@ -55,29 +55,6 @@ public class FirstFragment extends Fragment {
         }
     }
 
-
-//    private ArrayList<UserPlaylist> getUserFriends() {
-//        // 여기서 네트워크나 로컬 DB에서 데이터를 가져오는 로직을 구현해야 해
-//        ArrayList<UserPlaylist> friendList = new ArrayList<>();
-//
-//        if (bundle != null) {
-//            String friends = bundle.getString("friends");
-//            try {
-//                // Parse the JSON array string
-//                JSONArray friendsData = new JSONArray(friends);
-//
-//                // Iterate through the playlistData and create UserPlaylist objects
-//                for (int i = 0; i < friendsData.length(); i++) {
-//                    JSONObject friendInfo = friendsData.getJSONObject(i);
-//                    friendList.add(new UserPlaylist(friendInfo.getString("friends"), friendInfo.getString("singer")));
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//                // Handle JSON parsing error
-//            }
-//        }
-//        return friendList;
-//    }
     private ArrayList<PlaylistItem> getFriendList() {
         ArrayList<PlaylistItem> friendList = new ArrayList<>();
         // Replace with your logic to fetch friend playlists
@@ -97,10 +74,6 @@ public class FirstFragment extends Fragment {
                 // Handle JSON parsing error
             }
         }
-//        // Sample data
-//        friendList.add(new PlaylistItem("Friend1", "Friend1 Playlist", R.drawable.ic_music_foreground));
-//        friendList.add(new PlaylistItem("Friend2", "Friend2 Playlist", R.drawable.ic_music_foreground));
-//        friendList.add(new PlaylistItem("Friend3", "Friend3 Playlist", R.drawable.ic_music_foreground));
         return friendList;
     }
 }
