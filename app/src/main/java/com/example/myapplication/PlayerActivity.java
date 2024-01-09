@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.view.View;
 import android.widget.ImageButton;
@@ -32,8 +33,13 @@ public class PlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_second);
 
+        Intent intent = getIntent();
+        String songname = intent.getStringExtra("songname");
+
+
         // 음악 제목
         titleView = findViewById(R.id.titleView);
+        titleView.setText(songname);
         // 음악 탐색바
         seekBar = findViewById(R.id.seekBar);
 
