@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity
         bundle.putString("userName", userName);
         bundle.putString("userAge", userAge);
 
-        getUserSongs("id", new SongCallback() {
+        getUserSongs(userID, new SongCallback() {
             @Override
             public void onSongsReceived(JSONArray songRows) {
                 // Handle the received songs (songRows)

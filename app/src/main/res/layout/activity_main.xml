@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@android:color/white">
+    android:background="#A8F68F8F">
 
     <FrameLayout
         android:id="@+id/flFragment"
@@ -25,12 +25,11 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:background="@android:color/white"
+        android:background="#8CB58B"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@drawable/bottom_nav_menu"
-        app:itemBackground="@color/white" />
+        app:menu="@drawable/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
