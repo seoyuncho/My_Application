@@ -102,7 +102,7 @@ public class PlayerActivity extends AppCompatActivity {
     public void playAction(View view) {
         if (!player.isPlaying()) { // 진행중이 아닐 때
             player.start();
-            playButton.findViewById(R.drawable.stop_icon);
+            playButton.setBackgroundResource(R.drawable.stop_icon);
             new t1().start();
             checkplay = true; // seekbar를 그릴 쓰레드를 반복해야함
             firstcheckplay = true; // 정지상태에서 씨크바 드래그드롭으로 조작 시 내가 의도하지 않은 결과가 나온다.
@@ -110,7 +110,7 @@ public class PlayerActivity extends AppCompatActivity {
 
         } else { // 진행중일 때
             player.pause();
-            playButton.findViewById(R.drawable.play_icon);
+            playButton.setBackgroundResource(R.drawable.play_icon);
             checkplay = false; // seekbar 쓰레드도 정지함
             firstcheckplay = false; // 정지상태에서 씨크바 드래그드롭으로 조작 시 내가 의도하지 않은 결과가 나온다.
             // (시작 정지 버튼이 꼬이게 됨) firstcheckplay를 도입해서 그걸 해결했음.
