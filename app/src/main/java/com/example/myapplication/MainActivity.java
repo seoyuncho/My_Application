@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setBackgroundColor(Color.BLACK);
         firstFragment = new FirstFragment();
         secondFragment = new SecondFragment();
         thirdFragment = new ThirdFragment();
@@ -81,7 +83,6 @@ public class MainActivity extends AppCompatActivity
                 Log.e("VolleyError", "Error: " + errorMessage);
             }
         });
-
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.player);
     }
@@ -135,6 +136,7 @@ public class MainActivity extends AppCompatActivity
                             // Assuming the songs are stored as a JSONArray in the response
                             JSONArray songRows = response.getJSONArray("songs");
                             bundle.putString("songRows", songRows.toString());
+                            firstFragment.setArguments(bundle);
                             secondFragment.setArguments(bundle);
                             thirdFragment.setArguments(bundle);
                             callback.onSongsReceived(songRows);

@@ -63,6 +63,7 @@ public class ThirdFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("songname", clickedPlaylist.getSongName());
                 bundle.putString("singer", clickedPlaylist.getSinger());
+                bundle.putString("source", "ThirdFragment");
 
                 // Create a new instance of SecondFragment and set the arguments
                 SecondFragment secondFragment = new SecondFragment();
