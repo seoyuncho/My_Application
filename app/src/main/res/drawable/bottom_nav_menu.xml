@@ -3,9 +3,9 @@
     <item
         android:id="@+id/home"
         android:title="Home"
-        android:icon="@drawable/home_icon"/>
+        android:icon="@drawable/home_icon" />
     <item
         android:id="@+id/person"
         android:title="My Page"
-        android:icon="@drawable/person_icon"/>
+        android:icon="@drawable/person_icon" />
 </menu>
