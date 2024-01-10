@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="#A8F68F8F">
+    android:background="#F6A7A7">
 
     <FrameLayout
         android:id="@+id/flFragment"

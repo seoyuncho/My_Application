@@ -14,7 +14,7 @@ import android.os.Bundle;
 
 public class PlayerActivity extends AppCompatActivity {
     MediaPlayer player;
-    TextView titleView;
+    TextView songnameView, singerView;
     Button playButton;
     SeekBar seekBar;
     boolean checkplay = false;
@@ -37,11 +37,14 @@ public class PlayerActivity extends AppCompatActivity {
 
         intent = getIntent();
         String songname = intent.getStringExtra("songname");
-
+        String singer = intent.getStringExtra("singer");
 
         // 음악 제목
-        titleView = findViewById(R.id.titleView);
-        titleView.setText(songname);
+        songnameView = findViewById(R.id.songnameView);
+        songnameView.setText(songname);
+        singerView = findViewById(R.id.singerView);
+        singerView.setText(singer);
+
         // 음악 탐색바
         seekBar = findViewById(R.id.seekBar);
 

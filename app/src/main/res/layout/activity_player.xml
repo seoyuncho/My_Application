@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#A8F68F8F"
+    android:background="#F6A7A7"
     android:orientation="vertical"
     android:weightSum="10"
     tools:context=".PlayerActivity">
@@ -16,15 +16,28 @@
         android:gravity="center"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/titleView"
-            android:layout_margin="20dp"
+            android:id="@+id/songnameView"
+            android:layout_marginTop="20dp"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"
-            android:padding="10dp"
             android:singleLine="true"
-            android:text="Song name"
+            android:text="songname"
             android:textColor="#FFF"
-            android:textSize="22sp"
+            android:textSize="30sp"
+            android:textAlignment="center"
+            android:textStyle="italic|bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </TextView>
+        <TextView
+            android:id="@+id/singerView"
+            android:layout_marginBottom="20dp"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:text="singer"
+            android:textColor="#FFF"
+            android:textSize="20sp"
             android:textAlignment="center"
             android:textStyle="italic"
             android:layout_width="match_parent"
@@ -56,19 +69,6 @@
                 android:layout_marginBottom="10dp">
             </SeekBar>
 
-            <TextView
-                android:id="@+id/txtsstart"
-                android:layout_toLeftOf="@+id/seekBar"
-                android:layout_centerInParent="true"
-                android:layout_alignParentLeft="false"
-                android:layout_marginLeft="20dp"
-                android:text="0:10"
-                android:textColor="#FFF"
-                android:textSize="14sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-            </TextView>
             <TextView
                 android:id="@+id/txtsstop"
                 android:layout_toRightOf="@+id/seekBar"
