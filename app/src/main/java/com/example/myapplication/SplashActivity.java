@@ -14,7 +14,7 @@ public class SplashActivity extends AppCompatActivity {
 
         //splash 3초 동안 뜨게 한다.
         Handler hd = new Handler();
-        hd.postDelayed(new splashHandler(), 2000); //3000은 3초란 뜻이다. 1000은 1초다.
+        hd.postDelayed(new splashHandler(), 2000);
         //postDelayed 메서드를 통해 3초 뒤에 SplashHandler 작동하도록 설정
     }
 

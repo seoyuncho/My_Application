@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -18,6 +19,8 @@ public class PlayerActivity extends AppCompatActivity {
     SeekBar seekBar;
     boolean checkplay = false;
     boolean firstcheckplay = false;
+    Intent intent;
+    ThirdFragment thirdFragment;
 
     class t1 extends Thread{
         public void run(){
@@ -32,7 +35,7 @@ public class PlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        Intent intent = getIntent();
+        intent = getIntent();
         String songname = intent.getStringExtra("songname");
 
 
@@ -46,6 +49,9 @@ public class PlayerActivity extends AppCompatActivity {
         playButton = findViewById(R.id.playButton);
 
         // MediaPlayer 음악 재생 관련 객체
+        player = MediaPlayer.create(this, R.raw.congratulations);
+
+
         player = MediaPlayer.create(this, R.raw.congratulations);
         appStartButton = findViewById(R.id.appStartButton);
         appStartButton.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +100,23 @@ public class PlayerActivity extends AppCompatActivity {
 
     }// oncreate의 끝
 
+    @Override
+    public void onBackPressed() {
+        if (intent.getStringExtra("start") == "ThirdFragment") {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragment, thirdFragment)
+                    .commit();
+        } else if (intent.getStringExtra("start") == "FirstFragment") {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragment, thirdFragment)
+                    .commit();
+        }else {
+            super.onBackPressed();
+        }
+    }
+
     /**
      * 이 버튼을 누르면 현재 위치에서 5초 뒤로 이동한다.
      * @param view
@@ -139,11 +162,6 @@ public class PlayerActivity extends AppCompatActivity {
     public void forwardAction(View view) {
         player.seekTo(player.getCurrentPosition() + 5000);
         seekBar.setProgress(player.getCurrentPosition());// 일시정지 상태에서 이 버튼 눌러도 seekbar가 상태를 반영하게 함.
-    }
-
-    public void onBackPressed(){// 앱을 나갔을 때 음악도 멈춰야 함
-        super.onBackPressed();
-        onDestroy();
     }
 
 }
