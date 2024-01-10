@@ -8,7 +8,7 @@ import org.json.JSONObject;
 public class UserRequest extends JsonObjectRequest {
 
     // Server URL
-    final static private String URL = "http://143.248.218.164:3000/check-user";
+    final static private String URL = "http://143.248.218.237:3000/check-user";
 
     // JSON data to be sent to the server
     private JSONObject jsonBody;
