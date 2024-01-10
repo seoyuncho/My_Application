@@ -49,10 +49,8 @@ public class PlayerActivity extends AppCompatActivity {
         playButton = findViewById(R.id.playButton);
 
         // MediaPlayer 음악 재생 관련 객체
-        player = MediaPlayer.create(this, R.raw.congratulations);
+        player = MediaPlayer.create(this, R.raw.maniac);
 
-
-        player = MediaPlayer.create(this, R.raw.congratulations);
         seekBar.setMax(player.getDuration());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
