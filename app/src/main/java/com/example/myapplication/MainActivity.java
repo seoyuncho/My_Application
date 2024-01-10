@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
         firstFragment = new FirstFragment();
         thirdFragment = new ThirdFragment();
 
@@ -81,6 +80,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.home);
     }
