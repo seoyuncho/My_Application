@@ -65,7 +65,6 @@ public class ThirdFragment extends Fragment {
                 intent.putExtra("start", "ThirdFragment");
                 intent.putExtra("songname", clickedPlaylist.getSongName());
                 intent.putExtra("singer", clickedPlaylist.getSinger());
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
             }
         });

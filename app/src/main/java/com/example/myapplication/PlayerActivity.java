@@ -49,10 +49,10 @@ public class PlayerActivity extends AppCompatActivity {
         playButton = findViewById(R.id.playButton);
 
         // MediaPlayer 음악 재생 관련 객체
-        player = MediaPlayer.create(this, R.raw.congratulations);
+        player = MediaPlayer.create(this, R.raw.maniac);
 
+//        if (intent.getStringExtra("start") != LoginActivity)
 
-        player = MediaPlayer.create(this, R.raw.congratulations);
         appStartButton = findViewById(R.id.appStartButton);
         appStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
