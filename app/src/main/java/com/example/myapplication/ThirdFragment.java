@@ -126,6 +126,8 @@ public class ThirdFragment extends Fragment {
                     }
                 });
 
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        dialog.show();
     }
 }
