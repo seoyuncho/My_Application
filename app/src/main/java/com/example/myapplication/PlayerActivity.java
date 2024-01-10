@@ -107,7 +107,12 @@ public class PlayerActivity extends AppCompatActivity {
                     .beginTransaction()
                     .replace(R.id.flFragment, thirdFragment)
                     .commit();
-        } else {
+        } else if (intent.getStringExtra("start") == "FirstFragment") {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragment, thirdFragment)
+                    .commit();
+        }else {
             super.onBackPressed();
         }
     }
