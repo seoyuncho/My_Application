@@ -1,11 +1,11 @@
-// ThirdFragment.java
-
 package com.example.myapplication;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.camera2.CameraExtensionSession;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,28 +15,35 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ThirdFragment extends Fragment {
+public class SecondFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private UserPlaylistAdapter userPlaylistAdapter;
     private ArrayList<UserPlaylist> userPlaylistArrayList;
     public Bundle bundle;
-    public ThirdFragment() {
+    public SecondFragment() {
         // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         bundle = getArguments();
-        View view = inflater.inflate(R.layout.fragment_third, container, false);
+        String userID = bundle.getString("userID");
+        View view = inflater.inflate(R.layout.fragment_second, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         userPlaylistArrayList = getUserPlaylist(); // 이 부분은 네트워크나 로컬 DB에서 데이터를 가져오는 로직을 추가해야 할 거야
@@ -45,14 +52,9 @@ public class ThirdFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(userPlaylistAdapter);
 
-        view.findViewById(R.id.settingsButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showUserInfoDialog();
-            }
-        });
-
         // Set item click listener for the recyclerView
+
+
         userPlaylistAdapter.setOnItemClickListener(new UserPlaylistAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -60,9 +62,23 @@ public class ThirdFragment extends Fragment {
                 // You can get the clicked UserPlaylist object from the userPlaylistArrayList
                 UserPlaylist clickedPlaylist = userPlaylistArrayList.get(position);
 
+                getUserSongs(userID, new MainActivity.SongCallback() {
+                    @Override
+                    public void onSongsReceived(JSONArray songRows) {
+                        // Handle the received songs (songRows)
+                        Log.d("VolleyResponse", "Songs: " + songRows.toString());
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        // Handle the error
+                        Log.e("VolleyError", "Error: " + errorMessage);
+                    }
+                });
+
                 // PlayerActivity 호출
                 Intent intent = new Intent(getActivity(),PlayerActivity.class);
-                intent.putExtra("start", "ThirdFragment");
+                intent.putExtra("start", "SecondFragment");
                 intent.putExtra("songname", clickedPlaylist.getSongName());
                 intent.putExtra("singer", clickedPlaylist.getSinger());
                 startActivity(intent);
@@ -75,7 +91,7 @@ public class ThirdFragment extends Fragment {
     public ArrayList<UserPlaylist> getUserPlaylist() {
         // 여기서 네트워크나 로컬 DB에서 데이터를 가져오는 로직을 구현해야 해
         ArrayList<UserPlaylist> playlists = new ArrayList<>();
-
+        bundle = getArguments();
         if (bundle != null) {
             String songRows = bundle.getString("songRows");
             try {
@@ -95,39 +111,42 @@ public class ThirdFragment extends Fragment {
         return playlists;
     }
 
-    private void showUserInfoDialog() {
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_user_info, null);
+    public interface SongCallback {
+        void onSongsReceived(JSONArray songRows);
+        void onError(String errorMessage);
+    }
 
-        if (bundle != null) {
-            String userID = bundle.getString("userID");
-            String userPassword = bundle.getString("userPassword");
-            String userName = bundle.getString("userName");
-            String userAge = bundle.getString("userAge");
+    public void getUserSongs(String userID, final MainActivity.SongCallback callback) {
+        String url = "http://143.248.218.237:3000/user-songs/" + userID;
 
-            TextView textViewUserID = dialogView.findViewById(R.id.textViewUserID);
-            TextView textViewUserPassword = dialogView.findViewById(R.id.textViewUserPassword);
-            TextView textViewUserName = dialogView.findViewById(R.id.textViewUserName);
-            TextView textViewUserAge = dialogView.findViewById(R.id.textViewUserAge);
-
-            textViewUserID.setText("ID: " + userID);
-            textViewUserPassword.setText("Password: " + userPassword);
-            textViewUserName.setText("Name: " + userName);
-            textViewUserAge.setText("Age: " + userAge);
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setView(dialogView)
-                .setTitle("User Information")
-                .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                    public void onResponse(JSONObject response) {
+                        try {
+                            // Assuming the songs are stored as a JSONArray in the response
+                            JSONArray songRows = response.getJSONArray("songs");
+//                            bundle.putString("songRows", songRows.toString());
+//                            secondFragment.setArguments(bundle);
+                            callback.onSongsReceived(songRows);
+                        } catch (JSONException e) {
+                            callback.onError("Error parsing JSON");
+                        }
                     }
-                });
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError("Network error: " + error.toString());
+                    }
+                }
+        );
 
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
-        dialog.show();
+        // Add the request to the RequestQueue
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(jsonObjectRequest);
     }
 }

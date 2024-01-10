@@ -14,6 +14,15 @@ import java.util.List;
 public class FriendPlaylistAdapter extends RecyclerView.Adapter<FriendPlaylistAdapter.ViewHolder> {
 
     private List<PlaylistItem> friendLists;
+    private FriendPlaylistAdapter.OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
 
     public FriendPlaylistAdapter(List<PlaylistItem> friendLists) {
         this.friendLists = friendLists;
@@ -32,6 +41,15 @@ public class FriendPlaylistAdapter extends RecyclerView.Adapter<FriendPlaylistAd
         holder.friendTextView.setText(playlistItem.getFriends());
         holder.playlistNameTextView.setText(playlistItem.getPlaylistName());
         holder.playlistImageView.setImageResource(playlistItem.getPlaylistImageRes());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(position);
+                }
+            }
+        });
     }
 
     @Override
