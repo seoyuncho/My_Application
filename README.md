@@ -1,9 +1,14 @@
-# Watermelon: 음악을 나누다 🍉🎶
+# Watermelon**: 음악을 나누다 🍉🎶**
 
 ### **소개**
+
 ---
 
-Watermelon은 음악을 사랑하는 이들을 위한 소셜 음악 공유 플랫폼입니다. 친구들과 함께 음악을 나누고, 특별한 순간을 공유하세요. 피드를 통해 친구들이 등록한 다양한 플레이리스트를 간편하게 찾아들을 수 있습니다.
+Watermelon은 음악을 사랑하는 이들을 위한 소셜 음악 공유 플랫폼입니다.
+
+친구들과 함께 음악을 나누고, 특별한 순간을 공유하세요.
+
+피드를 통해 친구들이 등록한 다양한 플레이리스트를 간편하게 찾아들을 수 있습니다.
 
 ---
 
@@ -11,9 +16,15 @@ Watermelon은 음악을 사랑하는 이들을 위한 소셜 음악 공유 플�
 
 ---
 
-- **하준학** KAIST 전산학부 19학번  <a href="https://github.com/jannagi" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white"></a>
+- **하준학** KAIST 전산학부 19학번
     
-- **조서윤** 고려대학교 컴퓨터학과 22학번  <a href="https://github.com/seoyuncho" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white"></a>
+    [jannagi - Overview](https://github.com/jannagi)
+    
+- **조서윤** 고려대학교 컴퓨터학과 22학번
+    
+    [seoyuncho - Overview](https://github.com/seoyuncho)
+    
+
 ---
 
 ### 개발 환경
