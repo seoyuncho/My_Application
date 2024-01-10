@@ -16,13 +16,9 @@ Watermelon은 음악을 사랑하는 이들을 위한 소셜 음악 공유 플�
 
 ---
 
-- **하준학** KAIST 전산학부 19학번
+- **하준학** KAIST 전산학부 19학번  <a href="https://github.com/jannagi" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white"></a>
     
-    [jannagi - Overview](https://github.com/jannagi)
-    
-- **조서윤** 고려대학교 컴퓨터학과 22학번
-    
-    [seoyuncho - Overview](https://github.com/seoyuncho)
+- **조서윤** 고려대학교 컴퓨터학과 22학번  <a href="https://github.com/seoyuncho" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white"></a>
     
 
 ---
