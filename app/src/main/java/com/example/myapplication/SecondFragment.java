@@ -31,9 +31,10 @@ import java.util.ArrayList;
 public class SecondFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private UserPlaylistAdapter userPlaylistAdapter;
+    private UserPlaylistAdapter userPlaylistAdapter2;
     private ArrayList<UserPlaylist> userPlaylistArrayList;
     public Bundle bundle;
+    public JSONArray songRows;
     public SecondFragment() {
         // Required empty public constructor
     }
@@ -41,79 +42,79 @@ public class SecondFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         bundle = getArguments();
-        String userID = bundle.getString("userID");
         View view = inflater.inflate(R.layout.fragment_second, container, false);
 
-        recyclerView = view.findViewById(R.id.recyclerView);
-        userPlaylistArrayList = getUserPlaylist(); // 이 부분은 네트워크나 로컬 DB에서 데이터를 가져오는 로직을 추가해야 할 거야
-
-        userPlaylistAdapter = new UserPlaylistAdapter(userPlaylistArrayList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(userPlaylistAdapter);
-
-        // Set item click listener for the recyclerView
-
-
-        userPlaylistAdapter.setOnItemClickListener(new UserPlaylistAdapter.OnItemClickListener() {
+        String userID = bundle.getString("userID");
+        getUserSongs(userID, new MainActivity.SongCallback() {
             @Override
-            public void onItemClick(int position) {
-                // Handle item click here
-                // You can get the clicked UserPlaylist object from the userPlaylistArrayList
-                UserPlaylist clickedPlaylist = userPlaylistArrayList.get(position);
+            public void onSongsReceived(JSONArray songRows) {
+                // Handle the received songs (songRows)
+                Log.d("VolleyResponse", "Songs: " + songRows.toString());
 
-                getUserSongs(userID, new MainActivity.SongCallback() {
-                    @Override
-                    public void onSongsReceived(JSONArray songRows) {
-                        // Handle the received songs (songRows)
-                        Log.d("VolleyResponse", "Songs: " + songRows.toString());
-                    }
+                recyclerView = view.findViewById(R.id.recyclerView2);
+                userPlaylistArrayList = getUserPlaylist(songRows);
 
+                userPlaylistAdapter2 = new UserPlaylistAdapter(userPlaylistArrayList);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                recyclerView.setAdapter(userPlaylistAdapter2);
+
+                // Set item click listener for the recyclerView
+
+                userPlaylistAdapter2.setOnItemClickListener(new UserPlaylistAdapter.OnItemClickListener() {
                     @Override
-                    public void onError(String errorMessage) {
-                        // Handle the error
-                        Log.e("VolleyError", "Error: " + errorMessage);
+                    public void onItemClick(int position) {
+                        // Handle item click here
+                        // You can get the clicked UserPlaylist object from the userPlaylistArrayList
+                        UserPlaylist clickedPlaylist = userPlaylistArrayList.get(position);
+
+                        // PlayerActivity 호출
+                        Intent intent = new Intent(getActivity(),PlayerActivity.class);
+                        intent.putExtra("start", "SecondFragment");
+                        intent.putExtra("songname", clickedPlaylist.getSongName());
+                        intent.putExtra("singer", clickedPlaylist.getSinger());
+                        startActivity(intent);
                     }
                 });
+            }
 
-                // PlayerActivity 호출
-                Intent intent = new Intent(getActivity(),PlayerActivity.class);
-                intent.putExtra("start", "SecondFragment");
-                intent.putExtra("songname", clickedPlaylist.getSongName());
-                intent.putExtra("singer", clickedPlaylist.getSinger());
-                startActivity(intent);
+            @Override
+            public void onError(String errorMessage) {
+                // Handle the error
+                Log.e("VolleyError", "Error: " + errorMessage);
             }
         });
+
+//
+//        recyclerView = view.findViewById(R.id.recyclerView);
+//        userPlaylistArrayList = getUserPlaylist(songRows); // 이 부분은 네트워크나 로컬 DB에서 데이터를 가져오는 로직을 추가해야 할 거야
+
+
 
         return view;
     }
 
-    public ArrayList<UserPlaylist> getUserPlaylist() {
+    public ArrayList<UserPlaylist> getUserPlaylist(JSONArray songRows) {
         // 여기서 네트워크나 로컬 DB에서 데이터를 가져오는 로직을 구현해야 해
         ArrayList<UserPlaylist> playlists = new ArrayList<>();
-        bundle = getArguments();
-        if (bundle != null) {
-            String songRows = bundle.getString("songRows");
-            try {
-                // Parse the JSON array string
-                JSONArray playlistData = new JSONArray(songRows);
 
-                // Iterate through the playlistData and create UserPlaylist objects
-                for (int i = 0; i < playlistData.length(); i++) {
-                    JSONObject songInfo = playlistData.getJSONObject(i);
-                    playlists.add(new UserPlaylist(songInfo.getString("songname"), songInfo.getString("singer")));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                // Handle JSON parsing error
+        String songrows = songRows.toString();
+        try {
+            // Parse the JSON array string
+            JSONArray playlistData = new JSONArray(songrows);
+
+            // Iterate through the playlistData and create UserPlaylist objects
+            for (int i = 0; i < playlistData.length(); i++) {
+                JSONObject songInfo = playlistData.getJSONObject(i);
+                playlists.add(new UserPlaylist(songInfo.getString("songname"), songInfo.getString("singer")));
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            // Handle JSON parsing error
         }
-        return playlists;
-    }
 
-    public interface SongCallback {
-        void onSongsReceived(JSONArray songRows);
-        void onError(String errorMessage);
+        return playlists;
     }
 
     public void getUserSongs(String userID, final MainActivity.SongCallback callback) {
